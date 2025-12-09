@@ -1,0 +1,9 @@
+# Archivos de sistema
+Thumbs.db
+.DS_Store
+
+# Archivos generados por el sistema
+emails_log.html
+
+# (Opcional) Si quisieras proteger tus claves en el futuro:
+# config/config.php
