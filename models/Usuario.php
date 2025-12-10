@@ -9,7 +9,7 @@ class Usuario {
         $this->pdo = Database::getConnection();
     }
 
-    // --- AUTENTICACIÓN (Ya existía) ---
+    // --- AUTENTICACIÓN ---
     public function buscarPorCorreo($correo) {
         $stmt = $this->pdo->prepare("SELECT * FROM usuarios WHERE correo = ? AND deleted_at IS NULL");
         $stmt->execute([$correo]);
@@ -20,9 +20,14 @@ class Usuario {
         $this->pdo->prepare("UPDATE usuarios SET ultimo_login = NOW() WHERE id = ?")->execute([$id]);
     }
 
-    // --- ADMINISTRACIÓN (Nuevo) ---
+    public function obtenerPorId($id) {
+        $stmt = $this->pdo->prepare("SELECT * FROM usuarios WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch();
+    }
+
+    // --- ADMINISTRACIÓN ---
     
-    // Listar todos los usuarios activos
     public function obtenerTodos() {
         $sql = "SELECT u.*, c.nombre as carrera 
                 FROM usuarios u 
@@ -32,13 +37,30 @@ class Usuario {
         return $this->pdo->query($sql)->fetchAll();
     }
 
-    // Crear Usuario
     public function crear($datos) {
-        // Validar correo duplicado
-        if ($this->buscarPorCorreo($datos['correo'])) {
-            return "El correo ya está registrado.";
+        // 1. VALIDACIÓN DE CORREO (@pucesa.edu.ec)
+        if (!preg_match('/^[a-zA-Z0-9._%+-]+@pucesa\.edu\.ec$/', $datos['correo'])) {
+            return "Error: El correo debe ser institucional (@pucesa.edu.ec).";
         }
 
+        // 2. VALIDACIÓN DE CÉDULA (10 dígitos exactos)
+        if (!preg_match('/^[0-9]{10}$/', $datos['cedula'])) {
+            return "Error: La cédula debe tener exactamente 10 dígitos numéricos.";
+        }
+
+        // 3. VALIDACIÓN DE TELÉFONO (10 dígitos exactos)
+        if (!empty($datos['telefono']) && !preg_match('/^[0-9]{10}$/', $datos['telefono'])) {
+            return "Error: El teléfono debe tener 10 dígitos.";
+        }
+
+        // 4. VALIDACIÓN DE DUPLICADOS
+        $stmtCheck = $this->pdo->prepare("SELECT id FROM usuarios WHERE correo = ? OR cedula = ?");
+        $stmtCheck->execute([$datos['correo'], $datos['cedula']]);
+        if ($stmtCheck->fetch()) {
+            return "Error: El correo o la cédula ya están registrados en el sistema.";
+        }
+
+        // INSERCIÓN
         $sql = "INSERT INTO usuarios (nombre, correo, password_hash, rol, cedula, telefono, carrera_id, semestre_actual, estado) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'ACTIVO')";
         
@@ -53,7 +75,7 @@ class Usuario {
                 $datos['rol'], 
                 $datos['cedula'], 
                 $datos['telefono'],
-                $datos['carrera_id'] ?: null, // Si es nulo, guardar NULL
+                $datos['carrera_id'] ?: null,
                 $datos['semestre'] ?: null
             ]);
             return true;
@@ -62,15 +84,9 @@ class Usuario {
         }
     }
 
-    // Eliminar Usuario (Soft Delete)
     public function eliminar($id) {
         $stmt = $this->pdo->prepare("UPDATE usuarios SET deleted_at = NOW(), estado = 'INACTIVO' WHERE id = ?");
         return $stmt->execute([$id]);
-    }
-    public function obtenerPorId($id) {
-        $stmt = $this->pdo->prepare("SELECT * FROM usuarios WHERE id = ?");
-        $stmt->execute([$id]);
-        return $stmt->fetch();
     }
 }
 ?>

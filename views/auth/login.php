@@ -15,7 +15,7 @@
         background-image: url('https://img.freepik.com/free-photo/diverse-students-studying-together-academic-concept_53876-126292.jpg?w=1380');
         background-size: cover;
         background-position: center;
-        background-blend-mode: multiply; /* Oscurece la imagen para leer mejor */
+        background-blend-mode: multiply;
     }
     .login-box {
         box-shadow: 0 0 20px rgba(0,0,0,0.5);
@@ -91,17 +91,10 @@
 
       </form>
       
-      <div class="social-auth-links text-center mt-2 mb-3">
-        <hr>
-        <small class="text-muted">¿Eres estudiante nuevo?</small><br>
-        <a href="#" class="btn btn-block btn-default disabled">
-          <i class="fas fa-user-plus mr-2"></i> Solicitar Registro
-        </a>
       </div>
-      
-    </div>
-    </div>
   </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
