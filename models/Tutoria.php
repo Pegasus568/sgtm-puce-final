@@ -9,7 +9,7 @@ class Tutoria {
         $this->pdo = Database::getConnection();
     }
 
-    // ================== SECCIÓN ADMIN ==================
+    // --- ADMIN ---
     public function obtenerTodas() {
         $sql = "SELECT t.*, 
                        est.nombre AS nombre_estudiante, 
@@ -31,7 +31,7 @@ class Tutoria {
         return $stmt->execute([$id]);
     }
 
-    // ================== SECCIÓN GENERAL (LISTADOS) ==================
+    // --- GENERAL (Estudiante/Docente) ---
     public function obtenerPorUsuario($id, $rol) {
         $campo = ($rol === 'DOCENTE') ? 'tutor_id' : 'estudiante_id';
         $joinContraparte = ($rol === 'DOCENTE') ? 'estudiante_id' : 'tutor_id';
@@ -50,6 +50,7 @@ class Tutoria {
         return $stmt->fetchAll();
     }
 
+    // --- DETALLE COMPLETO (Para Modal) ---
     public function obtenerDetalle($id) {
         $sql = "SELECT t.*, 
                        est.nombre AS est_nombre, est.correo AS est_correo, est.cedula AS est_cedula,
@@ -68,7 +69,7 @@ class Tutoria {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // ================== SECCIÓN VALIDACIONES Y CREACIÓN ==================
+    // --- VALIDACIONES ---
     public function verificarCruce($tutor_id, $fecha, $inicio, $fin) {
         $sql = "SELECT COUNT(*) FROM tutorias 
                 WHERE tutor_id = ? AND fecha = ? 
@@ -89,6 +90,7 @@ class Tutoria {
         return $stmt->fetchColumn();
     }
 
+    // --- CREAR ---
     public function crear($datos) {
         $codigo = 'TR-' . date('Y') . '-' . substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 4);
         $sql = "INSERT INTO tutorias 
@@ -117,7 +119,7 @@ class Tutoria {
         }
     }
 
-    // ================== SECCIÓN GESTIÓN DOCENTE ==================
+    // --- GESTIÓN ---
     public function responderSolicitud($id, $docente, $accion, $texto, $lugar) {
         $estado = ($accion === 'confirmar') ? 'CONFIRMADA' : 'RECHAZADA';
         $motivo = ($accion === 'rechazar') ? $texto : null;
@@ -127,11 +129,16 @@ class Tutoria {
 
     public function registrarAsistencia($id, $docente, $asistio, $obs) {
         $estado = ($asistio == 1) ? 'REALIZADA' : 'NO_ASISTIO';
-        // Nota: Si usas la tabla 'reportes_sesion' aparte, aquí iría la transacción. 
-        // Por simplicidad para tu entrega, actualizamos todo en tutorias si tienes la columna observaciones, 
-        // o asumimos que solo cambia el estado.
-        $sql = "UPDATE tutorias SET estado=?, asistio=? WHERE id=? AND tutor_id=?";
-        return $this->pdo->prepare($sql)->execute([$estado, $asistio, $id, $docente]);
+        // Asumiendo que 'observaciones' se guarda en la tabla tutorias. Si no tienes esa columna, borra esa parte.
+        $sql = "UPDATE tutorias SET estado=?, asistio=?, observaciones=? WHERE id=? AND tutor_id=?";
+        return $this->pdo->prepare($sql)->execute([$estado, $asistio, $obs, $id, $docente]);
+    }
+
+    // [MODIFICADO] Ahora recibe el motivo
+    public function cancelar($id, $solicitante_id, $motivo) {
+        $sql = "UPDATE tutorias SET estado='CANCELADA', motivo_rechazo=? WHERE id=? AND solicitado_por=?";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([$motivo, $id, $solicitante_id]);
     }
 }
 ?>
