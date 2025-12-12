@@ -1,0 +1,137 @@
+/* public/css/custom_puce.css */
+
+:root {
+    --puce-blue-dark: #002D74;  /* Azul oscuro oficial */
+    --puce-blue-light: #004489; /* Azul medio */
+    --puce-gold: #FDB913;       /* Dorado acento */
+    --puce-gray-bg: #f4f6f9;    /* Fondo general */
+    --card-radius: 12px;        /* Bordes redondeados */
+}
+
+body {
+    font-family: 'Source Sans Pro', 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--puce-gray-bg);
+}
+
+/* --- HEADER SUPERIOR --- */
+.main-header {
+    background-color: var(--puce-blue-dark) !important;
+    border-bottom: 3px solid var(--puce-gold) !important;
+}
+.main-header .nav-link, .main-header .navbar-brand {
+    color: #ffffff !important;
+}
+
+/* --- SIDEBAR (MENÚ LATERAL) --- */
+/* Forzamos el sidebar blanco */
+.main-sidebar {
+    background-color: #ffffff !important;
+    box-shadow: 2px 0 15px rgba(0,0,0,0.05);
+}
+/* Logo superior del menú */
+.brand-link {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #eee !important;
+    color: var(--puce-blue-dark) !important;
+}
+/* Enlaces del menú */
+.nav-sidebar .nav-link {
+    color: #444 !important;
+    font-weight: 500;
+}
+.nav-sidebar .nav-link.active {
+    background-color: var(--puce-blue-dark) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 6px rgba(0,45,116,0.2);
+}
+.nav-sidebar .nav-link:hover {
+    background-color: #f0f0f0;
+}
+
+/* --- TARJETAS Y CONTENIDO --- */
+.content-wrapper {
+    background-color: var(--puce-gray-bg);
+}
+.card {
+    border: none;
+    border-radius: var(--card-radius);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    transition: transform 0.2s;
+}
+.card-header {
+    background-color: white;
+    border-bottom: 1px solid #f0f0f0;
+    border-radius: var(--card-radius) var(--card-radius) 0 0 !important;
+    font-weight: bold;
+    color: var(--puce-blue-dark);
+}
+
+/* --- BOTONES --- */
+.btn-primary {
+    background-color: var(--puce-blue-light);
+    border-color: var(--puce-blue-light);
+}
+.btn-primary:hover {
+    background-color: var(--puce-blue-dark);
+    border-color: var(--puce-blue-dark);
+}
+.btn-warning {
+    background-color: var(--puce-gold);
+    color: #000;
+    border: none;
+}
+/* Títulos de Página */
+h1.m-0 {
+    color: var(--puce-blue-dark);
+    font-weight: 700;
+    font-size: 1.8rem;
+    border-left: 5px solid var(--puce-gold);
+    padding-left: 15px;
+    margin-bottom: 20px !important;
+}
+
+/* Tarjetas de Datos (Info-box) */
+.info-box {
+    border-radius: var(--card-radius);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: none;
+    transition: transform 0.3s;
+}
+.info-box:hover {
+    transform: translateY(-5px);
+}
+.info-box-icon {
+    border-radius: var(--card-radius) 0 0 var(--card-radius) !important;
+}
+
+/* Tablas Institucionales */
+.table thead th {
+    background-color: var(--puce-blue-dark);
+    color: white;
+    border: none;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 45, 116, 0.03); /* Azul muy suave */
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(253, 185, 19, 0.1); /* Dorado muy suave al pasar mouse */
+}
+
+/* Badges (Etiquetas de Estado) */
+.badge-primary, .badge-success, .badge-danger, .badge-warning {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+/* Botones de Acción en Tablas */
+.btn-sm {
+    border-radius: 4px;
+    margin: 0 2px;
+}
